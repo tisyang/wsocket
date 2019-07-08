@@ -3,6 +3,14 @@
 #ifdef _WIN32
 /* winsock */
 #include <Windows.h>
+#include <stdio.h>
+#ifdef __MINGW32__
+# define THREAD_LOCAL __thread
+#else
+# define THREAD_LOCAL __declspec(thread)
+#endif
+
+static THREAD_LOCAL char m_msgbuf[256];
 
 int wsocket_lib_init()
 {
@@ -10,12 +18,30 @@ int wsocket_lib_init()
     return WSAStartup(MAKEWORD(2, 0), &wsadata);
 }
 
-void wsocket_lib_cleanup()
+int wsocket_lib_cleanup()
 {
     return WSACleanup();
 }
+
+char* wsocket_strerror(int err)
+{
+    m_msgbuf[0] = '\0';
+    wchar_t wbuf[256];
+    wbuf[0] = L'\0';
+    if (FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM |
+                      FORMAT_MESSAGE_IGNORE_INSERTS,
+                      NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                      (LPTSTR)wbuf, sizeof(wbuf)/sizeof(wchar_t), NULL)) {
+        wcstombs(m_msgbuf, wbuf, sizeof(m_msgbuf) - 1);
+    } else {
+        snprintf(m_msgbuf, sizeof(m_msgbuf), "error code '%d'", err);
+    }
+    return m_msgbuf;
+}
+
 #else
 #include <fcntl.h>
+
 #endif
 
 

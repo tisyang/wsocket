@@ -1,6 +1,10 @@
 #ifndef W_SOCKET_H
 #define W_SOCKET_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
 
 #ifdef _WIN32
 // windows winsock api
@@ -20,10 +24,16 @@ int wsocket_lib_init();
 int wsocket_lib_cleanup();
 
 #define wsocket_close(s)    closesocket(s)
+char* wsocket_strerror(int err);
 
 #else
 // linux socket api
 #include <errno.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <netinet/in.h>
 
 typedef int wsocket;
 #define INVALID_WSOCKET     (-1)
@@ -36,6 +46,7 @@ typedef int wsocket;
 #define WSOCKET_CLEANUP()
 
 #define wsocket_close(s)    close(s)
+#define wsocket_strerror(e) strerror(e)
 
 #endif
 
@@ -47,6 +58,11 @@ int wsocket_set_nonblocking(wsocket sock);
 // enable blocking on socket. return 0 on successfully, otherwise return
 // WSOCKET_ERROR, and check wsocket_errno for details.
 int wsocket_set_blocking(wsocket sock);
+
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 
 #endif /* W_SOCKET_H */
