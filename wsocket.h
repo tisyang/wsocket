@@ -12,6 +12,7 @@
 // windows winsock api
 #include <WinSock2.h>
 #include <WS2tcpip.h>
+#include <io.h>
 
 typedef SOCKET wsocket;
 #define INVALID_WSOCKET     INVALID_SOCKET
@@ -27,6 +28,8 @@ EXTERN_C int wsocket_lib_cleanup();
 
 #define wsocket_close(s)    closesocket(s)
 EXTERN_C char* wsocket_strerror(int err);
+
+#define WSOCKET_GET_FD(wsock)   _open_osfhandle(wsock, 0)
 
 #else
 // linux socket api
@@ -49,6 +52,8 @@ typedef int wsocket;
 
 #define wsocket_close(s)    close(s)
 #define wsocket_strerror(e) strerror(e)
+
+#define WSOCKET_GET_FD(wsock)   (wsock)
 
 #endif
 
