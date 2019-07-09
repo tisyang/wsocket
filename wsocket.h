@@ -2,7 +2,9 @@
 #define W_SOCKET_H
 
 #ifdef __cplusplus
-extern "C" {
+#define EXTERN_C  extern "C"
+#else
+#define EXTERN_C
 #endif // __cplusplus
 
 
@@ -20,11 +22,11 @@ typedef SOCKET wsocket;
 #define WSOCKET_INIT()      wsocket_lib_init()
 #define WSOCKET_CLEANUP()   wsocket_lib_cleanup()
 
-int wsocket_lib_init();
-int wsocket_lib_cleanup();
+EXTERN_C int wsocket_lib_init();
+EXTERN_C int wsocket_lib_cleanup();
 
 #define wsocket_close(s)    closesocket(s)
-char* wsocket_strerror(int err);
+EXTERN_C char* wsocket_strerror(int err);
 
 #else
 // linux socket api
@@ -53,16 +55,11 @@ typedef int wsocket;
 
 // enable non-blocking on socket. return 0 on successfully, otherwise return
 // WSOCKET_ERROR, and check wsocket_errno for details.
-int wsocket_set_nonblocking(wsocket sock);
+EXTERN_C int wsocket_set_nonblocking(wsocket sock);
 
 // enable blocking on socket. return 0 on successfully, otherwise return
 // WSOCKET_ERROR, and check wsocket_errno for details.
-int wsocket_set_blocking(wsocket sock);
-
-
-#ifdef __cplusplus
-}
-#endif // __cplusplus
+EXTERN_C int wsocket_set_blocking(wsocket sock);
 
 
 #endif /* W_SOCKET_H */
