@@ -18,6 +18,16 @@ typedef SOCKET wsocket;
 #define INVALID_WSOCKET     INVALID_SOCKET
 #define wsocket_errno       (WSAGetLastError())
 #define WSOCKET_ERROR       SOCKET_ERROR
+// check EWOULDBLOCK
+#ifdef EWOULDBLOCK
+# if EWOULDBLOCK != WSAEWOULDBLOCK
+#  warning  "EWOULDBLOCK has been defined but NOT equal to WSAEWOULDBLOCK, wsocket will re-define it"
+#  undef    EWOULDBLOCK
+#  define   EWOULDBLOCK     WSAEWOULDBLOCK
+# endif
+#else
+#define EWOULDBLOCK         WSAEWOULDBLOCK
+#endif
 
 // call this to init wsocket library.Setup WSA on win, do nothing on linux.
 #define WSOCKET_INIT()      wsocket_lib_init()
