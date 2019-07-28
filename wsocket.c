@@ -62,12 +62,12 @@ static int wsocket_configure_blocking(wsocket sock, int blocking)
 
 int wsocket_set_nonblocking(wsocket sock)
 {
-    return wsocket_configure_blocking(sock, 1);
+    return wsocket_configure_blocking(sock, 0);
 }
 
 int wsocket_set_blocking(wsocket sock)
 {
-    return wsocket_configure_blocking(sock, 0);
+    return wsocket_configure_blocking(sock, 1);
 }
 
 
