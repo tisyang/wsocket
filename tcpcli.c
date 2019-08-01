@@ -159,6 +159,7 @@ int tcpcli_read(struct tcpcli *tcp, void *buff, size_t count)
             tcp->state = STAT_ERROR;
         }
         if (rv > 0) {
+            tcp->activity = local_monotonic_clock();
             return rv;
         }
     }
@@ -189,6 +190,8 @@ int tcpcli_close(struct tcpcli *tcp)
         tcp->socket = INVALID_WSOCKET;
         tcp->state = STAT_ERROR;
         tcp->activity = 0;
+        tcp->addr[0] = '\0';
+        tcp->serv[0] = '\0';
     }
     return 0;
 }
