@@ -23,8 +23,6 @@ enum HubStreamState {
     STAT_CONNECTED,     // connected
 };
 
-#define CONNECTION_TIMEOUT 2.0
-
 static wsocket connect_to(const char *addr, const char* service)
 {
     wsocket sock = INVALID_WSOCKET;
@@ -70,13 +68,15 @@ static wsocket connect_to(const char *addr, const char* service)
     return sock;
 }
 
-int tcpcli_init(struct tcpcli *tcp)
+int tcpcli_init(struct tcpcli *tcp, float conn_timeout, float inact_timeout)
 {
     tcp->socket = INVALID_WSOCKET;
     tcp->state = STAT_ERROR;
     tcp->activity = 0.0;
     tcp->addr[0] = '\0';
     tcp->serv[0] = '\0';
+    tcp->connect_timeout = conn_timeout;
+    tcp->inactive_timeout = inact_timeout;
     return 0;
 }
 
@@ -114,7 +114,7 @@ static int tcpcli_wait(struct tcpcli *tcp)
         int err = select(tcp->socket + 1, NULL, &fds, NULL, &tv);
         if (err == 0) {
             // check if timeout
-            if (local_monotonic_clock() - tcp->activity >= CONNECTION_TIMEOUT) { // timeout and reconnect
+            if (tcp->connect_timeout > 0 && (local_monotonic_clock() - tcp->activity >= tcp->connect_timeout)) { // timeout and reconnect
                 tcp->state = STAT_ERROR;
             }
         } else if (err == -1) {
@@ -132,6 +132,11 @@ static int tcpcli_wait(struct tcpcli *tcp)
                 tcp->state = STAT_CONNECTED;
                 tcp->activity = local_monotonic_clock();
             }
+        }
+    } else if (tcp->state == STAT_CONNECTED) {
+        // check if inactive
+        if (tcp->inactive_timeout > 0 && (local_monotonic_clock() - tcp->activity >= tcp->inactive_timeout)) { // timeout and reconnect
+            tcp->state = STAT_ERROR;
         }
     }
     if (tcp->state == STAT_ERROR) { // reconnect
