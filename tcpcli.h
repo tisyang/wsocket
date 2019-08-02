@@ -21,11 +21,12 @@ struct tcpcli {
 
     float connect_timeout;  // connection timeout, in seconds. <= 0 means forever.
     float inactive_timeout; // recv inactive timeout, in seconds. <= 0 means no forever.
+    float reconnect_wait;   // wait time before start reconnect. <= 0 means no wait.
 };
 
 // init tcpcli object
 // always return 0
-int tcpcli_init(struct tcpcli *tcp, float conn_timeout, float inact_timeout);
+int tcpcli_init(struct tcpcli *tcp, float conn_timeout, float inact_timeout, float reconn_wait);
 
 // open tcpcli object, to connect to remote addr:port
 // return -1 in error, 0 in success
