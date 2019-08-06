@@ -39,12 +39,12 @@ static wsocket connect_to(const char *addr, const char *service)
     }
     for (const struct addrinfo *p = ai; p != NULL; p = p->ai_next) {
         sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+        if (sock == INVALID_WSOCKET) {
+            continue;
+        }
         if (wsocket_set_nonblocking(sock) == WSOCKET_ERROR) {
             wsocket_close(sock);
             return INVALID_WSOCKET;
-        }
-        if (sock == INVALID_WSOCKET) {
-            continue;
         }
         if (connect(sock, p->ai_addr, p->ai_addrlen) == WSOCKET_ERROR &&
             wsocket_errno != WSOCKET_EINPROGRESS) {
@@ -100,6 +100,15 @@ int tcpcli_open(struct tcpcli *tcp, const char *addr, int port)
     snprintf(tcp->serv, sizeof(tcp->serv), "%s", serv);
     return 0;
 }
+
+int tcpcli_isconnected(struct tcpcli *tcp)
+{
+    if (tcp && tcp->state == STAT_CONNECTED) {
+        return 1;
+    }
+    return 0;
+}
+
 
 static int tcpcli_wait(struct tcpcli *tcp)
 {

@@ -34,6 +34,10 @@ int tcpcli_init(struct tcpcli *tcp, float conn_timeout, float inact_timeout, flo
 // timeout limit is CONNECTION_TIMEOUT 
 int tcpcli_open(struct tcpcli *tcp, const char *addr, int port);
 
+// check if tcpcli object is connected
+// return 1 means connected, otherwise 0 not connected
+int tcpcli_isconnected(struct tcpcli *tcp);
+
 // read data from tcpcli object, in non-blocking mode
 // return -1 in error, otherwise return bytes count has read
 // it will auto reconnect in error
