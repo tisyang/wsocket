@@ -19,6 +19,7 @@ typedef SOCKET wsocket;
 #define wsocket_errno       (WSAGetLastError())
 #define WSOCKET_ERROR       SOCKET_ERROR
 #define WSOCKET_EWOULDBLOCK WSAEWOULDBLOCK
+#define WSOCKET_EAGAIN      WSOCKET_EWOULDBLOCK
 #define WSOCKET_EINPROGRESS WSAEWOULDBLOCK
 
 // call this to init wsocket library.Setup WSA on win, do nothing on linux.
@@ -41,12 +42,14 @@ EXTERN_C char* wsocket_strerror(int err);
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 
 typedef int wsocket;
 #define INVALID_WSOCKET     (-1)
 #define wsocket_errno       (errno)
 #define WSOCKET_ERROR       (-1)
 #define WSOCKET_EWOULDBLOCK EWOULDBLOCK
+#define WSOCKET_EAGAIN      WSOCKET_EWOULDBLOCK
 #define WSOCKET_EINPROGRESS EINPROGRESS
 
 // call this to init wsocket library. Setup WSA on win, do nothing on linux.
