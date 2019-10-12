@@ -1,6 +1,10 @@
 #ifndef W_SOCKET_H
 #define W_SOCKET_H
 
+// socket api wrapper, for win and linux
+// author by TyK
+// Github: https://github.com/lazytinker/wsocket
+
 #ifdef __cplusplus
 #define EXTERN_C  extern "C"
 #else
