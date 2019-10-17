@@ -237,6 +237,7 @@ int ntripcli_close(struct ntripcli *ntrip)
         ntrip->cache_idx = 0;
         ntrip->path_cache[0] = '\0';
     }
+    return 0;
 }
 
 
