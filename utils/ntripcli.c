@@ -159,7 +159,7 @@ static int ntripcli_wait(struct ntripcli *ntrip)
         char buf[256];
         snprintf(buf, sizeof(buf),
                  "GET /%s HTTP/1.0\r\n"
-                 "User-Agent: LazyTinker Ntrip Client 1.0\r\n"
+                 "User-Agent: https://github.com/lazytinker/wsocket\r\n"
                  "Authorization: Basic %s\r\n"
                  "\r\n",
                  ntrip->mnt, ntrip->token_cache);
