@@ -6,9 +6,9 @@
 // Github: https://github.com/lazytinker/wsocket
 
 #ifdef __cplusplus
-#define EXTERN_C  extern "C"
+#define WSOCKET_API  extern "C"
 #else
-#define EXTERN_C
+#define WSOCKET_API
 #endif // __cplusplus
 
 
@@ -30,11 +30,11 @@ typedef SOCKET wsocket;
 #define WSOCKET_INIT()      wsocket_lib_init()
 #define WSOCKET_CLEANUP()   wsocket_lib_cleanup()
 
-EXTERN_C int wsocket_lib_init();
-EXTERN_C int wsocket_lib_cleanup();
+WSOCKET_API int wsocket_lib_init();
+WSOCKET_API int wsocket_lib_cleanup();
 
 #define wsocket_close(s)    closesocket(s)
-EXTERN_C char* wsocket_strerror(int err);
+WSOCKET_API char* wsocket_strerror(int err);
 
 #define WSOCKET_GET_FD(wsock)   _open_osfhandle(wsock, 0)
 
@@ -71,11 +71,11 @@ typedef int wsocket;
 
 // enable non-blocking on socket. return 0 on successfully, otherwise return
 // WSOCKET_ERROR, and check wsocket_errno for details.
-EXTERN_C int wsocket_set_nonblocking(wsocket sock);
+WSOCKET_API int wsocket_set_nonblocking(wsocket sock);
 
 // enable blocking on socket. return 0 on successfully, otherwise return
 // WSOCKET_ERROR, and check wsocket_errno for details.
-EXTERN_C int wsocket_set_blocking(wsocket sock);
+WSOCKET_API int wsocket_set_blocking(wsocket sock);
 
 
 #endif /* W_SOCKET_H */

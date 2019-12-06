@@ -1,4 +1,4 @@
-option(WSOCKET_BUILD_UTILS "Build utils for woskcet" TRUE)
+option(WSOCKET_BUILD_UTILS "Build utils for woskcet" ON)
 
 aux_source_directory(utils SRC_UTILS)
 
