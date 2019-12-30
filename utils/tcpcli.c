@@ -16,7 +16,7 @@ static double local_monotonic_clock()
     return local_timestamp(&ts);
 }
 
-enum HubStreamState {
+enum TcpcliState {
     STAT_ERROR,     // error
     STAT_WAIT,      // waiting
     STAT_CONNECTING,// connecting
@@ -55,12 +55,6 @@ static wsocket connect_to(const char *addr, const char *service)
         }
         // Got it!
         break;
-    }
-
-    if (sock == INVALID_WSOCKET) {
-        freeaddrinfo(ai);
-        ai = NULL;
-        return INVALID_WSOCKET;
     }
 
     freeaddrinfo(ai);
