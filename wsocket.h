@@ -40,6 +40,8 @@ WSOCKET_API char* wsocket_strerror(int err);
 
 #else
 // linux socket api
+#define _GNU_SOURCE
+
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>

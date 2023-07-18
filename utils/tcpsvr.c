@@ -18,7 +18,11 @@ static wsocket listen_on(const char *addr, const char* service)
         return INVALID_WSOCKET;
     }
     for (const struct addrinfo *p = ai; p != NULL; p = p->ai_next) {
+#ifdef SOCK_CLOEXEC
+        sock = socket(p->ai_family, p->ai_socktype | SOCK_CLOEXEC, p->ai_protocol);
+#else
         sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+#endif
         if (wsocket_set_nonblocking(sock) == WSOCKET_ERROR) {
             wsocket_close(sock);
             return INVALID_WSOCKET;
@@ -96,7 +100,11 @@ int tcpsvr_count_clients(struct tcpsvr *svr)
 
 static int tcpsvr_wait(struct tcpsvr *svr)
 {
+#ifdef SOCK_CLOEXEC
+    wsocket sock = accept4(svr->socket, NULL, NULL, SOCK_CLOEXEC);
+#else
     wsocket sock = accept(svr->socket, NULL, NULL);
+#endif
     if (sock == INVALID_WSOCKET && wsocket_errno != WSOCKET_EAGAIN) {
         return -1;
     }

@@ -37,7 +37,11 @@ static wsocket connect_to(const char *addr, const char *service)
         return INVALID_WSOCKET;
     }
     for (const struct addrinfo *p = ai; p != NULL; p = p->ai_next) {
+#ifdef SOCK_CLOEXEC
+        sock = socket(p->ai_family, p->ai_socktype | SOCK_CLOEXEC, p->ai_protocol);
+#else
         sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+#endif
         if (sock == INVALID_WSOCKET) {
             continue;
         }
